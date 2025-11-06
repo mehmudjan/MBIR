@@ -1,0 +1,498 @@
+{
+	"info": {
+		"_postman_id": "a6b68943-9473-4cec-8492-0b1dac159024",
+		"name": "Core Intelligence Aviator APIs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14557458"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(pm.response.text());\r",
+							"pm.environment.set(\"tmp_tenant_access_token\", jsonData.access_token);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "{{app_confclient_id}}",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "{{app_confclient_secret}}",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "{{user_name}}",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "{{tenant_user_password}}",
+							"type": "text"
+						},
+						{
+							"key": "response_type",
+							"value": "id_token",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{tenant_token_url}}",
+					"host": [
+						"{{tenant_token_url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all bots",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(pm.response.text());\r",
+							"pm.environment.set(\"tmp_bot_id\", jsonData[0].botId);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": []
+				},
+				"url": {
+					"raw": "{{core-intelligence-aviator_url}}/cia/api/v0/bots?include_conversation=true",
+					"host": [
+						"{{core-intelligence-aviator_url}}"
+					],
+					"path": [
+						"cia",
+						"api",
+						"v0",
+						"bots"
+					],
+					"query": [
+						{
+							"key": "include_conversation",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get bot details by bot id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{core-intelligence-aviator_url}}/cia/api/v0/bots/{{tmp_bot_id}}?include_conversation=true&suggestions=false",
+					"host": [
+						"{{core-intelligence-aviator_url}}"
+					],
+					"path": [
+						"cia",
+						"api",
+						"v0",
+						"bots",
+						"{{tmp_bot_id}}"
+					],
+					"query": [
+						{
+							"key": "include_conversation",
+							"value": "true"
+						},
+						{
+							"key": "suggestions",
+							"value": "false"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get bot suggestions",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(pm.response.text());\r",
+							"pm.environment.set(\"tmp_query\", jsonData.suggestions[0]);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{core-intelligence-aviator_url}}/cia/api/v0/bots/{{tmp_bot_id}}/suggestions",
+					"host": [
+						"{{core-intelligence-aviator_url}}"
+					],
+					"path": [
+						"cia",
+						"api",
+						"v0",
+						"bots",
+						"{{tmp_bot_id}}",
+						"suggestions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete conversation",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{core-intelligence-aviator_url}}/cia/api/v0/bots/{{tmp_bot_id}}/conversations",
+					"host": [
+						"{{core-intelligence-aviator_url}}"
+					],
+					"path": [
+						"cia",
+						"api",
+						"v0",
+						"bots",
+						"{{tmp_bot_id}}",
+						"conversations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Query",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(pm.response.text());\r",
+							"pm.environment.set(\"tmp_artifact_id\", jsonData.artifact_id);\r",
+							"pm.environment.set(\"tmp_file_id\", jsonData.data_csv);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{core-intelligence-aviator_url}}/cia/api/v0/bots/{{tmp_bot_id}}/queries?question={{tmp_query}}&include_suggestions=false&include_sqls=false&inlcude_data=true&conversation_mode=false",
+					"host": [
+						"{{core-intelligence-aviator_url}}"
+					],
+					"path": [
+						"cia",
+						"api",
+						"v0",
+						"bots",
+						"{{tmp_bot_id}}",
+						"queries"
+					],
+					"query": [
+						{
+							"key": "question",
+							"value": "{{tmp_query}}"
+						},
+						{
+							"key": "include_suggestions",
+							"value": "false"
+						},
+						{
+							"key": "include_sqls",
+							"value": "false"
+						},
+						{
+							"key": "inlcude_data",
+							"value": "true"
+						},
+						{
+							"key": "conversation_mode",
+							"value": "false"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get list of pins for a bot",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{core-intelligence-aviator_url}}/cia/api/v0/bots/{{tmp_bot_id}}/pins",
+					"host": [
+						"{{core-intelligence-aviator_url}}"
+					],
+					"path": [
+						"cia",
+						"api",
+						"v0",
+						"bots",
+						"{{tmp_bot_id}}",
+						"pins"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get artifacts by list of artifact ids",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{core-intelligence-aviator_url}}/cia/api/v0/bots/{{tmp_bot_id}}/artifacts?artifact_ids={{tmp_artifact_id}}&include_data=true&sampling=n",
+					"host": [
+						"{{core-intelligence-aviator_url}}"
+					],
+					"path": [
+						"cia",
+						"api",
+						"v0",
+						"bots",
+						"{{tmp_bot_id}}",
+						"artifacts"
+					],
+					"query": [
+						{
+							"key": "artifact_ids",
+							"value": "{{tmp_artifact_id}}"
+						},
+						{
+							"key": "include_data",
+							"value": "true"
+						},
+						{
+							"key": "sampling",
+							"value": "n"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create pin",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{core-intelligence-aviator_url}}/cia/api/v0/bots/{{tmp_bot_id}}/artifacts/{{tmp_artifact_id}}?action=PIN&pin_order=1",
+					"host": [
+						"{{core-intelligence-aviator_url}}"
+					],
+					"path": [
+						"cia",
+						"api",
+						"v0",
+						"bots",
+						"{{tmp_bot_id}}",
+						"artifacts",
+						"{{tmp_artifact_id}}"
+					],
+					"query": [
+						{
+							"key": "action",
+							"value": "PIN"
+						},
+						{
+							"key": "pin_order",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete pin",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{core-intelligence-aviator_url}}/cia/api/v0/bots/{{tmp_bot_id}}/artifacts/{{tmp_artifact_id}}?action=UNPIN",
+					"host": [
+						"{{core-intelligence-aviator_url}}"
+					],
+					"path": [
+						"cia",
+						"api",
+						"v0",
+						"bots",
+						"{{tmp_bot_id}}",
+						"artifacts",
+						"{{tmp_artifact_id}}"
+					],
+					"query": [
+						{
+							"key": "action",
+							"value": "UNPIN"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Thumbs down artifact",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{core-intelligence-aviator_url}}/cia/api/v0/bots/{{tmp_bot_id}}/artifacts/{{tmp_artifact_id}}?action=THUMBS_DOWN",
+					"host": [
+						"{{core-intelligence-aviator_url}}"
+					],
+					"path": [
+						"cia",
+						"api",
+						"v0",
+						"bots",
+						"{{tmp_bot_id}}",
+						"artifacts",
+						"{{tmp_artifact_id}}"
+					],
+					"query": [
+						{
+							"key": "action",
+							"value": "THUMBS_DOWN"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Thumbs up artifact",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{core-intelligence-aviator_url}}/cia/api/v0/bots/{{tmp_bot_id}}/artifacts/{{tmp_artifact_id}}?action=THUMBS_UP",
+					"host": [
+						"{{core-intelligence-aviator_url}}"
+					],
+					"path": [
+						"cia",
+						"api",
+						"v0",
+						"bots",
+						"{{tmp_bot_id}}",
+						"artifacts",
+						"{{tmp_artifact_id}}"
+					],
+					"query": [
+						{
+							"key": "action",
+							"value": "THUMBS_UP"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Download file",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{core-intelligence-aviator_url}}/cia/api/v0/files/{{tmp_file_id}}",
+					"host": [
+						"{{core-intelligence-aviator_url}}"
+					],
+					"path": [
+						"cia",
+						"api",
+						"v0",
+						"files",
+						"{{tmp_file_id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{tmp_tenant_access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
